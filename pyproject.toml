@@ -1,0 +1,27 @@
+# (2026-10-13) sleeping_clanker v1 packaging (renamed in 0.4.13, and to sleeping_clanker for Sleeping Clanker): src layout, stdlib-only runtime, pytest as the only dev dep.
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sleeping-clanker"
+# (2026-10-26) the version has one source, sleeping_clanker.__version__ ([tool.setuptools.dynamic])
+dynamic = ["version"]
+description = "Run queued Claude Code tasks unattended and wait out usage limits (Windows-native)."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+autopilot = "sleeping_clanker.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {attr = "sleeping_clanker.__version__"}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

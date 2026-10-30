@@ -1,0 +1,547 @@
+{
+  "name": "claud-autopilot",
+  "displayName": "Sleeping Clanker",
+  "description": "Queue Claude Code tasks and goals per project and run them unattended, waiting out usage limits. Native UI over the bundled sleeping_clanker Python core.",
+  "version": "1.0.1000",
+  "publisher": "bloodycub",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "icon.png",
+  "main": "./extension.js",
+  "extensionKind": [
+    "workspace"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onWebviewPanel:claudAutopilot.taskView"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "%capabilities.untrustedWorkspaces%"
+    },
+    "virtualWorkspaces": false
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "claudAutopilot",
+          "title": "Sleeping Clanker",
+          "icon": "media/autopilot.svg"
+        }
+      ]
+    },
+    "views": {
+      "claudAutopilot": [
+        {
+          "id": "claudAutopilot.queue",
+          "name": "%view.queue%"
+        },
+        {
+          "type": "webview",
+          "id": "claudAutopilot.addPanel",
+          "name": "%view.addPanel%",
+          "when": "config.claudAutopilot.showAddPanel"
+        }
+      ]
+    },
+    "commands": [
+      { "command": "claudAutopilot.add", "title": "%cmd.add%", "category": "Sleeping Clanker", "icon": "$(add)" },
+      { "command": "claudAutopilot.addTask", "title": "%cmd.addTask%", "category": "Sleeping Clanker", "icon": "$(checklist)" },
+      { "command": "claudAutopilot.addGoal", "title": "%cmd.addGoal%", "category": "Sleeping Clanker", "icon": "$(target)" },
+      { "command": "claudAutopilot.addPlan", "title": "%cmd.addPlan%", "category": "Sleeping Clanker", "icon": "$(lightbulb)" },
+      { "command": "claudAutopilot.addWithFiles", "title": "%cmd.addWithFiles%", "category": "Sleeping Clanker", "icon": "$(file-directory)" },
+      { "command": "claudAutopilot.addSelectionAsTask", "title": "%cmd.addSelectionAsTask%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.addFileAsTask", "title": "%cmd.addFileAsTask%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.startRunner", "title": "%cmd.startRunner%", "category": "Sleeping Clanker", "icon": "$(play)" },
+      { "command": "claudAutopilot.stopRunner", "title": "%cmd.stopRunner%", "category": "Sleeping Clanker", "icon": "$(debug-stop)" },
+      { "command": "claudAutopilot.startProjectRunner", "title": "%cmd.startProjectRunner%", "category": "Sleeping Clanker", "icon": "$(play)" },
+      { "command": "claudAutopilot.stopProjectRunner", "title": "%cmd.stopProjectRunner%", "category": "Sleeping Clanker", "icon": "$(debug-stop)" },
+      { "command": "claudAutopilot.showAllProjects", "title": "%cmd.showAllProjects%", "category": "Sleeping Clanker", "icon": "$(layers)" },
+      { "command": "claudAutopilot.showThisProject", "title": "%cmd.showThisProject%", "category": "Sleeping Clanker", "icon": "$(root-folder)" },
+      { "command": "claudAutopilot.refresh", "title": "%cmd.refresh%", "category": "Sleeping Clanker", "icon": "$(refresh)" },
+      { "command": "claudAutopilot.showLog", "title": "%cmd.showLog%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.openDataDir", "title": "%cmd.openDataDir%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.reportIssue", "title": "%cmd.reportIssue%", "category": "Sleeping Clanker", "icon": "$(github)" },
+      { "command": "claudAutopilot.sendForFix", "title": "%cmd.sendForFix%", "category": "Sleeping Clanker", "icon": "$(wrench)" },
+      { "command": "claudAutopilot.showDetails", "title": "%cmd.showDetails%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.retryItem", "title": "%cmd.retryItem%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.cancelItem", "title": "%cmd.cancelItem%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.removeItem", "title": "%cmd.removeItem%", "category": "Sleeping Clanker", "icon": "$(trash)" },
+      { "command": "claudAutopilot.moveToTop", "title": "%cmd.moveToTop%", "category": "Sleeping Clanker", "icon": "$(arrow-up)" },
+      { "command": "claudAutopilot.moveToBottom", "title": "%cmd.moveToBottom%", "category": "Sleeping Clanker", "icon": "$(arrow-down)" },
+      { "command": "claudAutopilot.addSubtask", "title": "%cmd.addSubtask%", "category": "Sleeping Clanker", "icon": "$(add)" },
+      { "command": "claudAutopilot.removeGroup", "title": "%cmd.removeGroup%", "category": "Sleeping Clanker", "icon": "$(trash)" },
+      { "command": "claudAutopilot.pauseItem", "title": "%cmd.pauseItem%", "category": "Sleeping Clanker", "icon": "$(debug-pause)" },
+      { "command": "claudAutopilot.resumeItem", "title": "%cmd.resumeItem%", "category": "Sleeping Clanker", "icon": "$(debug-continue)" },
+      { "command": "claudAutopilot.openRunLogFolder", "title": "%cmd.openRunLogFolder%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.statusMenu", "title": "%cmd.statusMenu%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.goalMenu", "title": "%cmd.goalMenu%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.itemClick", "title": "%cmd.itemClick%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.openLiveLog", "title": "%cmd.openLiveLog%", "category": "Sleeping Clanker", "icon": "$(comment-discussion)" },
+      { "command": "claudAutopilot.openRawLog", "title": "%cmd.openRawLog%", "category": "Sleeping Clanker", "icon": "$(output)" },
+      { "command": "claudAutopilot.replyItem", "title": "%cmd.replyItem%", "category": "Sleeping Clanker", "icon": "$(reply)" },
+      { "command": "claudAutopilot.sendReply", "title": "%cmd.sendReply%", "category": "Sleeping Clanker", "icon": "$(send)" },
+      { "command": "claudAutopilot.editItem", "title": "%cmd.editItem%", "category": "Sleeping Clanker", "icon": "$(edit)" },
+      { "command": "claudAutopilot.changeModel", "title": "%cmd.changeModel%", "category": "Sleeping Clanker", "icon": "$(hubot)" },
+      { "command": "claudAutopilot.changeRun", "title": "%cmd.changeRun%", "category": "Sleeping Clanker", "icon": "$(server-environment)" },
+      { "command": "claudAutopilot.saveEdit", "title": "%cmd.saveEdit%", "category": "Sleeping Clanker", "icon": "$(save)" },
+      { "command": "claudAutopilot.withdrawReply", "title": "%cmd.withdrawReply%", "category": "Sleeping Clanker", "icon": "$(discard)" },
+      { "command": "claudAutopilot.editAllowedCommands", "title": "%cmd.editAllowedCommands%", "category": "Sleeping Clanker", "icon": "$(terminal)" },
+      { "command": "claudAutopilot.newLane", "title": "%cmd.newLane%", "category": "Sleeping Clanker", "icon": "$(add)" },
+      { "command": "claudAutopilot.removeLane", "title": "%cmd.removeLane%", "category": "Sleeping Clanker", "icon": "$(trash)" },
+      { "command": "claudAutopilot.startLaneRunner", "title": "%cmd.startLaneRunner%", "category": "Sleeping Clanker", "icon": "$(play)" },
+      { "command": "claudAutopilot.stopLaneRunner", "title": "%cmd.stopLaneRunner%", "category": "Sleeping Clanker", "icon": "$(debug-stop)" },
+      { "command": "claudAutopilot.holdQueue", "title": "%cmd.holdQueue%", "category": "Sleeping Clanker", "icon": "$(debug-pause)" },
+      { "command": "claudAutopilot.releaseHold", "title": "%cmd.releaseHold%", "category": "Sleeping Clanker", "icon": "$(debug-continue)" },
+      { "command": "claudAutopilot.addToLane", "title": "%cmd.addToLane%", "category": "Sleeping Clanker", "icon": "$(add)" },
+      { "command": "claudAutopilot.addDefaults", "title": "%cmd.addDefaults%", "category": "Sleeping Clanker", "icon": "$(settings-gear)" },
+      { "command": "claudAutopilot.hideAddPanel", "title": "%cmd.hideAddPanel%", "category": "Sleeping Clanker", "icon": "$(close)" },
+      { "command": "claudAutopilot.showAddPanel", "title": "%cmd.showAddPanel%", "category": "Sleeping Clanker", "icon": "$(add)" },
+      { "command": "claudAutopilot.setAddDefault", "title": "%cmd.setAddDefault%", "category": "Sleeping Clanker" },
+      { "command": "claudAutopilot.hideAddDefaults", "title": "%cmd.hideAddDefaults%", "category": "Sleeping Clanker", "icon": "$(eye-closed)" },
+      { "command": "claudAutopilot.openSettings", "title": "%cmd.openSettings%", "category": "Sleeping Clanker", "icon": "$(gear)" },
+      { "command": "claudAutopilot.changeLanguage", "title": "%cmd.changeLanguage%", "category": "Sleeping Clanker", "icon": "$(globe)" },
+      { "command": "claudAutopilot.showStats", "title": "%cmd.showStats%", "category": "Sleeping Clanker", "icon": "$(graph)" },
+      { "command": "claudAutopilot.toggleAdhd", "title": "%cmd.toggleAdhd%", "category": "Sleeping Clanker", "icon": "$(eye)" }
+    ],
+    "menus": {
+      "commandPalette": [
+        { "command": "claudAutopilot.addSelectionAsTask", "when": "editorHasSelection" },
+        { "command": "claudAutopilot.addFileAsTask", "when": "editorIsOpen" },
+        { "command": "claudAutopilot.showDetails", "when": "false" },
+        { "command": "claudAutopilot.retryItem", "when": "false" },
+        { "command": "claudAutopilot.cancelItem", "when": "false" },
+        { "command": "claudAutopilot.removeItem", "when": "false" },
+        { "command": "claudAutopilot.moveToTop", "when": "false" },
+        { "command": "claudAutopilot.moveToBottom", "when": "false" },
+        { "command": "claudAutopilot.addSubtask", "when": "false" },
+        { "command": "claudAutopilot.removeGroup", "when": "false" },
+        { "command": "claudAutopilot.openRunLogFolder", "when": "false" },
+        { "command": "claudAutopilot.pauseItem", "when": "false" },
+        { "command": "claudAutopilot.resumeItem", "when": "false" },
+        { "command": "claudAutopilot.startProjectRunner", "when": "false" },
+        { "command": "claudAutopilot.stopProjectRunner", "when": "false" },
+        { "command": "claudAutopilot.goalMenu", "when": "false" },
+        { "command": "claudAutopilot.itemClick", "when": "false" },
+        { "command": "claudAutopilot.openLiveLog", "when": "false" },
+        { "command": "claudAutopilot.openRawLog", "when": "false" },
+        { "command": "claudAutopilot.replyItem", "when": "false" },
+        { "command": "claudAutopilot.sendReply", "when": "resourceScheme == untitled" },
+        { "command": "claudAutopilot.editItem", "when": "false" },
+        { "command": "claudAutopilot.changeModel", "when": "false" },
+        { "command": "claudAutopilot.changeRun", "when": "false" },
+        { "command": "claudAutopilot.saveEdit", "when": "resourceScheme == untitled" },
+        { "command": "claudAutopilot.withdrawReply", "when": "false" },
+        { "command": "claudAutopilot.removeLane", "when": "false" },
+        { "command": "claudAutopilot.startLaneRunner", "when": "false" },
+        { "command": "claudAutopilot.stopLaneRunner", "when": "false" },
+        { "command": "claudAutopilot.addToLane", "when": "false" },
+        { "command": "claudAutopilot.showAllProjects", "when": "!claudAutopilot.allProjects" },
+        { "command": "claudAutopilot.showThisProject", "when": "claudAutopilot.allProjects" },
+        { "command": "claudAutopilot.setAddDefault", "when": "false" },
+        { "command": "claudAutopilot.hideAddDefaults", "when": "false" }
+      ],
+      "explorer/context": [
+        { "command": "claudAutopilot.addWithFiles", "when": "resourceScheme == file", "group": "claudAutopilot@1" }
+      ],
+      "editor/context": [
+        { "command": "claudAutopilot.addSelectionAsTask", "when": "editorHasSelection", "group": "claudAutopilot@1" }
+      ],
+      "view/title": [
+        { "command": "claudAutopilot.add", "when": "view == claudAutopilot.queue", "group": "navigation@1" },
+        { "command": "claudAutopilot.addWithFiles", "when": "view == claudAutopilot.queue", "group": "navigation@1" },
+        { "command": "claudAutopilot.showAllProjects", "when": "view == claudAutopilot.queue && !claudAutopilot.allProjects", "group": "navigation@4" },
+        { "command": "claudAutopilot.showThisProject", "when": "view == claudAutopilot.queue && claudAutopilot.allProjects", "group": "navigation@4" },
+        { "command": "claudAutopilot.startRunner", "when": "view == claudAutopilot.queue && !claudAutopilot.runnerAlive", "group": "navigation@2" },
+        { "command": "claudAutopilot.stopRunner", "when": "view == claudAutopilot.queue && claudAutopilot.runnerAlive", "group": "navigation@2" },
+        { "command": "claudAutopilot.refresh", "when": "view == claudAutopilot.queue", "group": "navigation@3" },
+        { "command": "claudAutopilot.openSettings", "when": "view == claudAutopilot.queue", "group": "navigation@5" },
+        { "command": "claudAutopilot.changeLanguage", "when": "view == claudAutopilot.queue", "group": "3_defaults@2" },
+        { "command": "claudAutopilot.toggleAdhd", "when": "view == claudAutopilot.queue", "group": "3_defaults@4" },
+        { "command": "claudAutopilot.showLog", "when": "view == claudAutopilot.queue", "group": "2_files@1" },
+        { "command": "claudAutopilot.openDataDir", "when": "view == claudAutopilot.queue", "group": "2_files@2" },
+        { "command": "claudAutopilot.reportIssue", "when": "view == claudAutopilot.queue", "group": "2_files@3" },
+        { "command": "claudAutopilot.sendForFix", "when": "view == claudAutopilot.queue", "group": "2_files@4" },
+        { "command": "claudAutopilot.newLane", "when": "view == claudAutopilot.queue", "group": "1_queues@1" },
+        { "command": "claudAutopilot.holdQueue", "when": "view == claudAutopilot.queue && !claudAutopilot.allHeld", "group": "navigation@2.5" },
+        { "command": "claudAutopilot.releaseHold", "when": "view == claudAutopilot.queue && claudAutopilot.anyHeld", "group": "navigation@2.5" },
+        { "command": "claudAutopilot.addDefaults", "when": "view == claudAutopilot.queue", "group": "3_defaults@1" },
+        { "command": "claudAutopilot.showAddPanel", "when": "view == claudAutopilot.queue && !config.claudAutopilot.showAddPanel", "group": "3_defaults@3" },
+        { "command": "claudAutopilot.hideAddPanel", "when": "view == claudAutopilot.addPanel", "group": "navigation@9" }
+      ],
+      "view/item/context": [
+        { "command": "claudAutopilot.showDetails", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\./", "group": "1_info@1" },
+        { "command": "claudAutopilot.openLiveLog", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\./", "group": "1_info@0" },
+        { "command": "claudAutopilot.openRawLog", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\./", "group": "1_info@1" },
+        { "command": "claudAutopilot.replyItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(blocked|done|failed|cancelled|paused)(\\.edit)?$/", "group": "2_change@0" },
+        { "command": "claudAutopilot.openRunLogFolder", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\./", "group": "1_info@2" },
+        { "command": "claudAutopilot.reportIssue", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(failed|blocked)(\\.edit)?$/", "group": "1_info@3" },
+        { "command": "claudAutopilot.sendForFix", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(failed|blocked)(\\.edit)?$/", "group": "1_info@4" },
+        { "command": "claudAutopilot.retryItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(failed|cancelled|done|waiting|blocked)(\\.edit)?$/", "group": "2_change@1" },
+        { "command": "claudAutopilot.editItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(pending|paused|waiting|failed|cancelled)\\.edit$/", "group": "2_change@0" },
+        { "command": "claudAutopilot.editItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(pending|paused)\\.edit$/", "group": "inline@0" },
+        { "command": "claudAutopilot.changeModel", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(pending|paused|waiting|blocked|done|failed|cancelled)(\\.edit)?$/", "group": "2_change@5" },
+        { "command": "claudAutopilot.changeRun", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(pending|paused|waiting|blocked|done|failed|cancelled)(\\.edit)?$/", "group": "2_change@6" },
+        { "command": "claudAutopilot.editAllowedCommands", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.blocked(\\.edit)?$/", "group": "2_change@9" },
+        { "command": "claudAutopilot.cancelItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(pending|running|waiting|paused|failed|blocked)(\\.edit)?$/", "group": "2_change@2" },
+        { "command": "claudAutopilot.pauseItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(pending|running|waiting)(\\.edit)?$/", "group": "2_change@3" },
+        { "command": "claudAutopilot.resumeItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.paused(\\.edit)?$/", "group": "2_change@4" },
+        { "command": "claudAutopilot.removeItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\./", "group": "3_remove@1" },
+        { "command": "claudAutopilot.moveToTop", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(pending|paused|waiting|blocked|failed)(\\.edit)?$/", "group": "2_move@1" },
+        { "command": "claudAutopilot.moveToBottom", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(pending|paused|waiting|blocked|failed)(\\.edit)?$/", "group": "2_move@2" },
+        { "command": "claudAutopilot.addSubtask", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\./", "group": "2_add@1" },
+        { "command": "claudAutopilot.addSubtask", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\./", "group": "inline@3" },
+        { "command": "claudAutopilot.removeGroup", "when": "view == claudAutopilot.queue && viewItem =~ /^group\\.(done|errors|unfinished|cancelled)$/", "group": "inline@1" },
+        { "command": "claudAutopilot.removeGroup", "when": "view == claudAutopilot.queue && viewItem =~ /^group\\.(done|errors|unfinished|cancelled)$/", "group": "3_remove@1" },
+        { "command": "claudAutopilot.pauseItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.(pending|running|waiting)(\\.edit)?$/", "group": "inline@1" },
+        { "command": "claudAutopilot.resumeItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.paused(\\.edit)?$/", "group": "inline@1" },
+        { "command": "claudAutopilot.removeItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\./", "group": "inline@2" },
+        { "command": "claudAutopilot.startProjectRunner", "when": "view == claudAutopilot.queue && viewItem == project.stopped", "group": "inline@1" },
+        { "command": "claudAutopilot.stopProjectRunner", "when": "view == claudAutopilot.queue && viewItem == project.running", "group": "inline@1" },
+        { "command": "claudAutopilot.openLiveLog", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.running(\\.edit)?$/", "group": "inline@0" },
+        { "command": "claudAutopilot.replyItem", "when": "view == claudAutopilot.queue && viewItem =~ /^item\\.blocked(\\.edit)?$/", "group": "inline@0" },
+        { "command": "claudAutopilot.startLaneRunner", "when": "view == claudAutopilot.queue && viewItem =~ /^lane\\.stopped/", "group": "inline@1" },
+        { "command": "claudAutopilot.stopLaneRunner", "when": "view == claudAutopilot.queue && viewItem =~ /^lane\\.running/", "group": "inline@1" },
+        { "command": "claudAutopilot.addToLane", "when": "view == claudAutopilot.queue && viewItem =~ /^lane\\./", "group": "inline@2" },
+        { "command": "claudAutopilot.startLaneRunner", "when": "view == claudAutopilot.queue && viewItem =~ /^lane\\.stopped/", "group": "1_runner@1" },
+        { "command": "claudAutopilot.stopLaneRunner", "when": "view == claudAutopilot.queue && viewItem =~ /^lane\\.running/", "group": "1_runner@1" },
+        { "command": "claudAutopilot.addToLane", "when": "view == claudAutopilot.queue && viewItem =~ /^lane\\./", "group": "2_add@1" },
+        { "command": "claudAutopilot.holdQueue", "when": "view == claudAutopilot.queue && viewItem =~ /^lane\\.(running|stopped)(\\.held\\.timed)?(\\.removable)?$/", "group": "1_runner@2" },
+        { "command": "claudAutopilot.releaseHold", "when": "view == claudAutopilot.queue && viewItem =~ /^lane\\.(running|stopped)\\.held/", "group": "1_runner@2" },
+        { "command": "claudAutopilot.removeLane", "when": "view == claudAutopilot.queue && viewItem =~ /^lane\\..*\\.removable$/", "group": "3_remove@1" },
+        { "command": "claudAutopilot.setAddDefault", "when": "view == claudAutopilot.queue && viewItem =~ /^default\\./", "group": "1_change@1" },
+        { "command": "claudAutopilot.addDefaults", "when": "view == claudAutopilot.queue && viewItem == defaults", "group": "1_change@0" },
+        { "command": "claudAutopilot.hideAddDefaults", "when": "view == claudAutopilot.queue && viewItem == defaults", "group": "3_remove@1" },
+        { "command": "claudAutopilot.hideAddDefaults", "when": "view == claudAutopilot.queue && viewItem == defaults", "group": "inline@1" }
+      ]
+    },
+    "languages": [
+      { "id": "autopilot-log", "aliases": ["Sleeping Clanker Log"] }
+    ],
+    "grammars": [
+      { "language": "autopilot-log", "scopeName": "text.autopilot-log", "path": "./syntaxes/autopilot-log.tmLanguage.json" }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "claudAutopilot.queue",
+        "contents": "%view.queue.welcome%"
+      }
+    ],
+    "configuration": {
+      "title": "Sleeping Clanker",
+      "properties": {
+        "claudAutopilot.pythonPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%config.pythonPath%",
+          "scope": "machine"
+        },
+        "claudAutopilot.dataDir": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%config.dataDir%",
+          "scope": "machine"
+        },
+        "claudAutopilot.defaultProfile": {
+          "type": "string",
+          "enum": ["safe", "edits", "plan", "shell-read", "shell-dev"],
+          "enumDescriptions": [
+            "%config.defaultProfile.safe%",
+            "%config.defaultProfile.edits%",
+            "%config.defaultProfile.plan%",
+            "%config.defaultProfile.shell-read%",
+            "%config.defaultProfile.shell-dev%"
+          ],
+          "default": "safe",
+          "scope": "machine",
+          "description": "%config.defaultProfile%"
+        },
+        "claudAutopilot.defaultKind": {
+          "type": "string",
+          "enum": ["ask", "task", "goal", "plan", "files"],
+          "enumDescriptions": [
+            "%config.defaultKind.ask%",
+            "%config.defaultKind.task%",
+            "%config.defaultKind.goal%",
+            "%config.defaultKind.plan%",
+            "%config.defaultKind.files%"
+          ],
+          "default": "ask",
+          "markdownDescription": "%config.defaultKind%"
+        },
+        "claudAutopilot.askProfile": {
+          "type": "boolean",
+          "default": true,
+          "scope": "machine",
+          "markdownDescription": "%config.askProfile%"
+        },
+        "claudAutopilot.defaultLane": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%config.defaultLane%"
+        },
+        "claudAutopilot.askGoalCaps": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "%config.askGoalCaps%"
+        },
+        "claudAutopilot.showAddPanel": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "%config.showAddPanel%"
+        },
+        "claudAutopilot.showAddDefaults": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "%config.showAddDefaults%"
+        },
+        "claudAutopilot.groupByStatus": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "%config.groupByStatus%"
+        },
+        "claudAutopilot.autoPickBestOption": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "%config.autoPickBestOption%",
+          "scope": "machine"
+        },
+        "claudAutopilot.disableFullAccessColor": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "%config.disableFullAccessColor%",
+          "scope": "machine"
+        },
+        "claudAutopilot.fullAccessIdleConfirm": {
+          "type": "string",
+          "enum": ["4h", "1d", "7d", "never"],
+          "enumDescriptions": ["%config.fullAccessIdleConfirm.4h%", "%config.fullAccessIdleConfirm.1d%", "%config.fullAccessIdleConfirm.7d%", "%config.fullAccessIdleConfirm.never%"],
+          "default": "4h",
+          "markdownDescription": "%config.fullAccessIdleConfirm%",
+          "scope": "machine"
+        },
+        "claudAutopilot.runCodeSilently": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "%config.runCodeSilently%",
+          "scope": "machine"
+        },
+        "claudAutopilot.autoRunInFullAccess": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "%config.autoRunInFullAccess%",
+          "scope": "machine"
+        },
+        "claudAutopilot.changesQuestion": {
+          "type": "string",
+          "default": "What did you change? List each file you modified as path:line, one line each on what and why.",
+          "markdownDescription": "%config.changesQuestion%",
+          "scope": "machine"
+        },
+        "claudAutopilot.quickPrompts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "maxItems": 8,
+          "default": [
+            "Continue where you stopped.",
+            "Run the tests and report the pass and fail counts.",
+            "Explain your last step in 1-3 lines."
+          ],
+          "markdownDescription": "%config.quickPrompts%",
+          "scope": "machine"
+        },
+        "claudAutopilot.fixProject": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%config.fixProject%",
+          "scope": "machine"
+        },
+        "claudAutopilot.refreshSeconds": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "description": "%config.refreshSeconds%"
+        },
+        "claudAutopilot.maxTurns": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "%config.maxTurns%"
+        },
+        "claudAutopilot.itemTimeoutMinutes": {
+          "type": "number",
+          "default": 180,
+          "minimum": 1,
+          "description": "%config.itemTimeoutMinutes%"
+        },
+        "claudAutopilot.maxLimitWaits": {
+          "type": "number",
+          "default": 10,
+          "minimum": 0,
+          "description": "%config.maxLimitWaits%"
+        },
+        "claudAutopilot.autoContinueAfterLimit": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "%config.autoContinueAfterLimit%",
+          "scope": "machine"
+        },
+        "claudAutopilot.autoStartRunner": {
+          "type": "boolean",
+          "default": true,
+          "description": "%config.autoStartRunner%",
+          "scope": "machine"
+        },
+        "claudAutopilot.limitForecastWarning": {
+          "type": "boolean",
+          "default": true,
+          "description": "%config.limitForecastWarning%"
+        },
+        "claudAutopilot.model": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "%config.model%"
+        },
+        "claudAutopilot.askModel": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "%config.askModel%"
+        },
+        "claudAutopilot.defaultProvider": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "markdownDescription": "%config.defaultProvider%"
+        },
+        "claudAutopilot.defaultModel": {
+          "type": "string",
+          "default": "",
+          "scope": "machine",
+          "markdownDescription": "%config.defaultModel%"
+        },
+        "claudAutopilot.defaultEffort": {
+          "type": "string",
+          "enum": ["", "low", "medium", "high", "xhigh", "max"],
+          "default": "",
+          "scope": "machine",
+          "markdownDescription": "%config.defaultEffort%"
+        },
+        "claudAutopilot.defaultUltracode": {
+          "type": "boolean",
+          "default": false,
+          "scope": "machine",
+          "markdownDescription": "%config.defaultUltracode%"
+        },
+        "claudAutopilot.defaultAutorun": {
+          "type": "boolean",
+          "default": false,
+          "scope": "machine",
+          "markdownDescription": "%config.defaultAutorun%"
+        },
+        "claudAutopilot.splitTasks": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "%config.splitTasks%"
+        },
+        "claudAutopilot.tasksAtOnce": {
+          "type": "integer",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 5,
+          "markdownDescription": "%config.tasksAtOnce%"
+        },
+        "claudAutopilot.newTaskStart": {
+          "type": "string",
+          "enum": ["whenFree", "afterPrevious"],
+          "enumDescriptions": [
+            "%config.newTaskStart.whenFree%",
+            "%config.newTaskStart.afterPrevious%"
+          ],
+          "default": "whenFree",
+          "markdownDescription": "%config.newTaskStart%"
+        },
+        "claudAutopilot.defaultMaxAgents": {
+          "type": "string",
+          "enum": ["default", "none", "1", "2", "3", "5", "unlimited"],
+          "enumDescriptions": [
+            "%config.defaultMaxAgents.default%",
+            "%config.defaultMaxAgents.none%",
+            "%config.defaultMaxAgents.1%",
+            "%config.defaultMaxAgents.2%",
+            "%config.defaultMaxAgents.3%",
+            "%config.defaultMaxAgents.5%",
+            "%config.defaultMaxAgents.unlimited%"
+          ],
+          "default": "default",
+          "scope": "machine",
+          "markdownDescription": "%config.defaultMaxAgents%"
+        },
+        "claudAutopilot.maxParallelRunners": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 20,
+          "markdownDescription": "%config.maxParallelRunners%"
+        },
+        "claudAutopilot.goalMaxRounds": {
+          "type": "number",
+          "default": 50,
+          "minimum": -1,
+          "maximum": 500,
+          "description": "%config.goalMaxRounds%"
+        },
+        "claudAutopilot.taskView": {
+          "type": "string",
+          "enum": ["chat", "text"],
+          "enumDescriptions": [
+            "%config.taskView.chat%",
+            "%config.taskView.text%"
+          ],
+          "default": "chat",
+          "description": "%config.taskView%",
+          "scope": "window"
+        },
+        "claudAutopilot.logPolling": {
+          "type": "boolean",
+          "default": false,
+          "description": "%config.logPolling%",
+          "scope": "window"
+        },
+        "claudAutopilot.language": {
+          "type": "string",
+          "enum": ["auto", "en", "ru", "fi"],
+          "enumDescriptions": [
+            "%config.language.enum.auto%",
+            "English.",
+            "Русский (Russian).",
+            "Suomi (Finnish)."
+          ],
+          "enumItemLabels": ["%config.language.auto%", "English", "Русский", "Suomi"],
+          "default": "auto",
+          "markdownDescription": "%config.language.description%"
+        },
+        "claudAutopilot.goalMaxHours": {
+          "type": "number",
+          "default": 72,
+          "exclusiveMinimum": 0,
+          "maximum": 720,
+          "description": "%config.goalMaxHours%"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "node --test test/"
+  }
+}

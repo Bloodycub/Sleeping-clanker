@@ -1,0 +1,4 @@
+# (2026-10-20) keep LF in the working copy on Windows (core.autocrlf=true would write CRLF; global rule #13)
+* text=auto eol=lf
+*.vsix binary
+*.png binary

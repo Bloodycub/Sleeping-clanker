@@ -1,0 +1,19 @@
+# (2026-10-13) upstream/ is a separate read-only clone with its own .git; audited SHA is in DECISIONS.md
+upstream/
+logs/
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+*.pyc
+# (2026-10-13) VS Code extension: build output and the core copy that build.py syncs
+dist/
+vscode-extension/python/
+# (2026-10-20, 0.4.7 providers) API keys: no .env file is ever committed, anywhere in the tree.
+# .env.example is the tracked template and holds no keys (docs/SPEC_V047_PROVIDERS.md).
+.env
+.env.*
+*.env
+!.env.example
+# (2026-10-26) agent git worktrees (Claude Code isolation); never part of this repo or the export
+.claude/

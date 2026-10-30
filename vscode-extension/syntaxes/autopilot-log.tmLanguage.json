@@ -1,0 +1,36 @@
+{
+  "$comment": "Sleeping Clanker live task log (2026-10-15, docs/SPEC_V03.md 1.3). Line-based: headers, tool lines, errors, denials, usage-limit pauses. Scopes are common theme scopes so every theme colours them. (2026-10-27, i18n fix review) The marker words match every UI language (en/fi/ru, lib/i18n.js); test/transcript.test.js renders each marker in each language against these patterns.",
+  "name": "Sleeping Clanker Log",
+  "scopeName": "text.autopilot-log",
+  "patterns": [
+    { "include": "#reply" },
+    { "include": "#result" },
+    { "include": "#header" },
+    { "include": "#tool" },
+    { "include": "#error" },
+    { "include": "#denied" },
+    { "include": "#ok" },
+    { "include": "#limit" },
+    { "include": "#cut" },
+    { "include": "#unparsed" }
+  ],
+  "repository": {
+    "reply": { "match": "^── (?:Owner reply|Omistajan vastaus|Ответ владельца) · .* ──$", "name": "markup.inserted.autopilot-log" },
+    "result": { "match": "^── (?:Result|Tulos|Результат): .* ──$", "name": "markup.heading.autopilot-log" },
+    "header": { "match": "^── .* ──$", "name": "keyword.control.autopilot-log" },
+    "tool": {
+      "match": "^(▶) (\\S+)(.*)$",
+      "captures": {
+        "1": { "name": "punctuation.definition.autopilot-log" },
+        "2": { "name": "entity.name.function.autopilot-log" },
+        "3": { "name": "string.unquoted.autopilot-log" }
+      }
+    },
+    "error": { "match": "^\\s*↳ (?:ERROR|VIRHE|ОШИБКА):.*$", "name": "invalid.illegal.autopilot-log" },
+    "denied": { "match": "^\\s*(⛔.*|↳ (?:denied|evätty|запрещено):.*)$", "name": "invalid.illegal.autopilot-log" },
+    "ok": { "match": "^\\s*↳ (?:ok|ок) .*$", "name": "comment.line.autopilot-log" },
+    "limit": { "match": "^⏸.*$", "name": "markup.changed.autopilot-log" },
+    "cut": { "match": "^… \\(.*\\)$", "name": "comment.line.autopilot-log" },
+    "unparsed": { "match": "^\\[(?:unparsed line|jäsentämätön rivi|нераспознанная строка)\\]$", "name": "comment.line.autopilot-log" }
+  }
+}
